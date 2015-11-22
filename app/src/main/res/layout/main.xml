@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    >
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="x is: -0.000001 / y is: -0.000001 / z is: -0.000001"
+    />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Bass"
+            android:textOff="Bass"
+            android:id="@+id/buttonBass"
+            android:checked="false" />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mnt Tom"
+            android:textOn="Mnt Tom"
+            android:textOff="Mnt Tom"
+            android:id="@+id/buttonMounted"
+            android:checked="false" />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Flr Tom"
+            android:textOn="Flr Tom"
+            android:textOff="Flr Tom"
+            android:id="@+id/buttonFloor"
+            android:checked="false" />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Snare"
+            android:textOff="Snare"
+            android:id="@+id/buttonSnare"
+            android:checked="false" />
+    </LinearLayout>
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/chartfft"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Graph"
+            android:textOff="Graph"
+            android:id="@+id/buttonGraph"
+            android:checked="true" />
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="Learning"
+            android:textOff="Learn"
+            android:id="@+id/LearnGraph"
+            android:checked="false"
+            android:onClick="trainingTime"/>
+        <ToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="reset"
+            android:textOff="reset"
+            android:id="@+id/reset"
+            android:checked="false"
+            android:onClick="reset"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/colorView" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bassCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bass: "
+        />
+    <TextView
+        android:id="@+id/mntCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Floor: "
+        />
+    <TextView
+        android:id="@+id/flrCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mount: "
+        />
+    <TextView
+        android:id="@+id/snareCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Snare: "
+        />
+</LinearLayout>
