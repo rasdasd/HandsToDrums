@@ -9,7 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -44,7 +44,6 @@ public class AccellerationActivity extends Activity {
     private long threshdelay = 300;
     private boolean drawDisplay = false;
     private ToggleButton graphB, bassB, floorB, mountB, snareB, resetB;
-    private ImageView colorView;
     private TextView bassT, floorT, mountT, snareT;
     private int bassC, floorC, mountC, snareC;
     private boolean learned = false;
@@ -57,6 +56,11 @@ public class AccellerationActivity extends Activity {
     ML3_Holder ML3Holder;
     ML4_Holder ML4Holder;
     SoundManager sm;
+    private Button holderButton;
+    private String[] holderStrings = {"MLP","ML1","ML2","ML3","ML4"};
+    private int holderCurrent;
+    private int holderCount = 5;
+    private Holder[] holderArray = new Holder[holderCount];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,8 +119,6 @@ public class AccellerationActivity extends Activity {
         mountB.setOnClickListener(buttonlisten);
         floorB.setOnClickListener(buttonlisten);
         snareB.setOnClickListener(buttonlisten);
-        colorView = (ImageView) findViewById(R.id.colorView);
-        colorView.setBackgroundColor(Color.GRAY);
         bassT = (TextView) findViewById(R.id.bassCount);
         mountT = (TextView) findViewById(R.id.mntCount);
         floorT = (TextView) findViewById(R.id.flrCount);
@@ -127,8 +129,21 @@ public class AccellerationActivity extends Activity {
         ML2Holder = new ML2_Holder(classes, fftsize * 9);
         ML3Holder = new ML3_Holder(classes, fftsize * 9);
         ML4Holder = new ML4_Holder(classes, fftsize * 9);
+        holderArray[0] = MLPHolder;
+        holderArray[1] = ML1Holder;
+        holderArray[2] = ML2Holder;
+        holderArray[3] = ML3Holder;
+        holderArray[4] = ML4Holder;
+        holderButton = (Button) findViewById(R.id.buttonML);
+        holderCurrent = 0;
         sm = new SoundManager(this);
         fft = new FloatFFT_1D(fftsize);
+    }
+
+    public void MLButtonClick(View v)
+    {
+        holderCurrent = (holderCurrent + 1) % holderCount;
+        ((Button)v).setText(holderStrings[holderCurrent]);
     }
 
     private void manipData() {
@@ -163,11 +178,10 @@ public class AccellerationActivity extends Activity {
             mountB.setChecked(false);
             floorB.setChecked(false);
             snareB.setChecked(false);
-            MLPHolder.train();
-            ML1Holder.train();
-            ML2Holder.train();
-            ML3Holder.train();
-            ML4Holder.train();
+            for(Holder h : holderArray) {
+                h.train();
+                //break;
+            }
             learned = true;
         }
         ((ToggleButton) v).setChecked(false);
@@ -191,8 +205,7 @@ public class AccellerationActivity extends Activity {
             datapoint[startpoint + fftsize * 2 + i] = zarr[i];
         }
         if (abssum > threshold) {
-            //Holder holder = getHolder();
-            Holder holder = MLPHolder;
+            Holder holder = holderArray[holderCurrent];
             int cata = holder.classify(datapoint);
             sound(cata);
         }
@@ -223,7 +236,9 @@ public class AccellerationActivity extends Activity {
         }
         if (currentClass >= 0) {
             if (abssum > threshold) {
-                MLPHolder.addDataPoint(datapoint,currentClass);
+                for(Holder h : holderArray) {
+                    h.addDataPoint(datapoint, currentClass);
+                }
                 increment(currentClass);
             }
         }
@@ -297,7 +312,11 @@ public class AccellerationActivity extends Activity {
         mountB.setChecked(false);
         floorB.setChecked(false);
         snareB.setChecked(false);
-        MLPHolder = new MLP_Holder(classes, fftsize * 3);
+        MLPHolder = new MLP_Holder(classes, fftsize * 9);
+        ML1Holder = new ML1_Holder(classes, fftsize * 9);
+        ML2Holder = new ML2_Holder(classes, fftsize * 9);
+        ML3Holder = new ML3_Holder(classes, fftsize * 9);
+        ML4Holder = new ML4_Holder(classes, fftsize * 9);
         bassC = 0;
         mountC = 0;
         floorC = 0;
