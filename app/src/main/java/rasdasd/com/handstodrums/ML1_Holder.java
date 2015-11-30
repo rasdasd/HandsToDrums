@@ -5,14 +5,14 @@ import java.util.ArrayList;
 /**
  * Created by David on 10/21/2015.
  */
-public class ML {
+public class ML1_Holder implements Holder {
     ArrayList<ArrayList<double[]>> data = new ArrayList<ArrayList<double[]>>();
     ArrayList<double[]> desiredouts = new ArrayList<double[]>();
     public int classes = 0;
     MLP mlp;
     int outputsize;
     int iterations = 10000;
-    public ML(int classes,int inputsize)
+    public ML1_Holder(int classes, int inputsize)
     {
         outputsize = Integer.SIZE-Integer.numberOfLeadingZeros(classes-1);
         this.classes = classes;

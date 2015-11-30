@@ -15,17 +15,12 @@ import android.widget.ToggleButton;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import org.jtransforms.fft.FloatFFT_1D;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class AccellerationActivity extends Activity {
     private TextView result;
@@ -45,8 +40,6 @@ public class AccellerationActivity extends Activity {
     private BarChart fftchart;
     private FloatFFT_1D fft;
     private int a = 0;
-    private ArrayList<float[]> mldata = new ArrayList<float[]>();
-    private ArrayList<Integer> classeslist = new ArrayList<Integer>();
     private float threshold = 8;
     private long threshdelay = 300;
     private boolean drawDisplay = false;
@@ -58,7 +51,11 @@ public class AccellerationActivity extends Activity {
     private int currentClass = -1;
     private int classes = 4;
     private Graph graph;
-    ML ml;
+    MLP_Holder MLPHolder;
+    ML1_Holder ML1Holder;
+    ML2_Holder ML2Holder;
+    ML3_Holder ML3Holder;
+    ML4_Holder ML4Holder;
     SoundManager sm;
 
     @Override
@@ -125,7 +122,11 @@ public class AccellerationActivity extends Activity {
         floorT = (TextView) findViewById(R.id.flrCount);
         snareT = (TextView) findViewById(R.id.snareCount);
         bassC = floorC = mountC = snareC = 0;
-        ml = new ML(classes, fftsize * 9);
+        MLPHolder = new MLP_Holder(classes, fftsize * 9);
+        ML1Holder = new ML1_Holder(classes, fftsize * 9);
+        ML2Holder = new ML2_Holder(classes, fftsize * 9);
+        ML3Holder = new ML3_Holder(classes, fftsize * 9);
+        ML4Holder = new ML4_Holder(classes, fftsize * 9);
         sm = new SoundManager(this);
         fft = new FloatFFT_1D(fftsize);
     }
@@ -162,7 +163,11 @@ public class AccellerationActivity extends Activity {
             mountB.setChecked(false);
             floorB.setChecked(false);
             snareB.setChecked(false);
-            ml.train();
+            MLPHolder.train();
+            ML1Holder.train();
+            ML2Holder.train();
+            ML3Holder.train();
+            ML4Holder.train();
             learned = true;
         }
         ((ToggleButton) v).setChecked(false);
@@ -186,7 +191,9 @@ public class AccellerationActivity extends Activity {
             datapoint[startpoint + fftsize * 2 + i] = zarr[i];
         }
         if (abssum > threshold) {
-            int cata = ml.classify(datapoint);
+            //Holder holder = getHolder();
+            Holder holder = MLPHolder;
+            int cata = holder.classify(datapoint);
             sound(cata);
         }
     }
@@ -216,8 +223,7 @@ public class AccellerationActivity extends Activity {
         }
         if (currentClass >= 0) {
             if (abssum > threshold) {
-                mldata.add(datapoint);
-                classeslist.add(currentClass);
+                MLPHolder.addDataPoint(datapoint,currentClass);
                 increment(currentClass);
             }
         }
@@ -257,7 +263,7 @@ public class AccellerationActivity extends Activity {
         super.onStop();
     }
 
-    private final float alpha = 0.8f;
+    private final static float alpha = 0.8f;
     float gravity[] = new float[3];
     private SensorEventListener accelerationListener = new SensorEventListener() {
         @Override
@@ -284,8 +290,6 @@ public class AccellerationActivity extends Activity {
     }
 
     public void reset(View v) {
-        mldata.clear();
-        classeslist.clear();
         currentClass = -1;
         learned = false;
         resetB.setChecked(false);
@@ -293,7 +297,7 @@ public class AccellerationActivity extends Activity {
         mountB.setChecked(false);
         floorB.setChecked(false);
         snareB.setChecked(false);
-        ml = new ML(classes, fftsize * 3);
+        MLPHolder = new MLP_Holder(classes, fftsize * 3);
         bassC = 0;
         mountC = 0;
         floorC = 0;
