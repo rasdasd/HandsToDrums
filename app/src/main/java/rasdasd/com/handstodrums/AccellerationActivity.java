@@ -41,7 +41,7 @@ public class AccellerationActivity extends Activity {
     private int counter = -1;
     private int fftcounter = -1;
     private int maxSizeGraph = 100;
-    private int fftsize = 8;
+    private int fftsize = 10;
     private BarChart fftchart;
     private FloatFFT_1D fft;
     private int a = 0;
@@ -125,7 +125,7 @@ public class AccellerationActivity extends Activity {
         floorT = (TextView) findViewById(R.id.flrCount);
         snareT = (TextView) findViewById(R.id.snareCount);
         bassC = floorC = mountC = snareC = 0;
-        ml = new ML(classes, fftsize * 3);
+        ml = new ML(classes, fftsize * 9);
         sm = new SoundManager(this);
         fft = new FloatFFT_1D(fftsize);
     }
@@ -138,18 +138,18 @@ public class AccellerationActivity extends Activity {
         xarrfft = new float[fftsize * 2];
         yarrfft = new float[fftsize * 2];
         zarrfft = new float[fftsize * 2];
-        for (int i = 0; i < fftsize; i++) {
-            xarrfft[i] = xarr[(fftcounter + i) % fftsize];
-            yarrfft[i] = yarr[(fftcounter + i) % fftsize];
-            zarrfft[i] = zarr[(fftcounter + i) % fftsize];
+        for (int i = 1; i <= fftsize; i++) {
+            xarrfft[fftsize - i] = xarr[(fftcounter + i) % fftsize];
+            yarrfft[fftsize - i] = yarr[(fftcounter + i) % fftsize];
+            zarrfft[fftsize - i] = zarr[(fftcounter + i) % fftsize];
         }
         fft.complexForward(xarrfft);
         fft.complexForward(yarrfft);
         fft.complexForward(zarrfft);
         if (!learned)
-            addpoint(xarrfft, yarrfft, zarrfft);
+            addpoint(xarr, yarr, zarr, xarrfft, yarrfft, zarrfft);
         else
-            classifyPoint(xarrfft, yarrfft, zarrfft);
+            classifyPoint(xarr, yarr, zarr, xarrfft, yarrfft, zarrfft);
     }
 
     private void refreshDisplay() {
@@ -168,8 +168,8 @@ public class AccellerationActivity extends Activity {
         ((ToggleButton) v).setChecked(false);
     }
 
-    private void classifyPoint(float[] xarrfft, float[] yarrfft, float[] zarrfft) {
-        float[] datapoint = new float[fftsize * 2 * 3];
+    private void classifyPoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
+        float[] datapoint = new float[fftsize * 9];
         float abssum = 0;
         for (int i = 0; i < fftsize * 2; i++) {
             datapoint[i] = xarrfft[i];
@@ -178,6 +178,12 @@ public class AccellerationActivity extends Activity {
             abssum += Math.abs(datapoint[i + fftsize * 2]);
             datapoint[i + 2 * fftsize * 2] = zarrfft[i];
             abssum += Math.abs(datapoint[i + 2 * fftsize * 2]);
+        }
+        int startpoint = fftsize*6;
+        for (int i = 0; i < fftsize; i++) {
+            datapoint[startpoint + i] = xarr[i];
+            datapoint[startpoint + fftsize + i] = yarr[i];
+            datapoint[startpoint + fftsize * 2 + i] = zarr[i];
         }
         if (abssum > threshold) {
             int cata = ml.classify(datapoint);
@@ -187,12 +193,12 @@ public class AccellerationActivity extends Activity {
 
     long lastplayed = 0;
 
-    private void addpoint(float[] xarrfft, float[] yarrfft, float[] zarrfft) {
+    private void addpoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
         if (System.currentTimeMillis() - lastplayed < threshdelay) {
             return;
         }
         lastplayed = System.currentTimeMillis();
-        float[] datapoint = new float[fftsize * 2 * 3];
+        float[] datapoint = new float[fftsize * 9];
         float abssum = 0;
         for (int i = 0; i < fftsize * 2; i++) {
             datapoint[i] = xarrfft[i];
@@ -201,6 +207,12 @@ public class AccellerationActivity extends Activity {
             abssum += Math.abs(datapoint[i + fftsize * 2]);
             datapoint[i + 2 * fftsize * 2] = zarrfft[i];
             abssum += Math.abs(datapoint[i + 2 * fftsize * 2]);
+        }
+        int startpoint = fftsize*6;
+        for (int i = 0; i < fftsize; i++) {
+            datapoint[startpoint + i] = xarr[i];
+            datapoint[startpoint + fftsize + i] = yarr[i];
+            datapoint[startpoint + fftsize * 2 + i] = zarr[i];
         }
         if (currentClass >= 0) {
             if (abssum > threshold) {
