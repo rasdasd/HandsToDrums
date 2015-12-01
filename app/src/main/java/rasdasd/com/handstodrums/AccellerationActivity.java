@@ -36,12 +36,12 @@ public class AccellerationActivity extends Activity {
     private int counter = -1;
     private int fftcounter = -1;
     private int maxSizeGraph = 100;
-    private int fftsize = 10;
+    private int fftsize = 20;
     private BarChart fftchart;
     private FloatFFT_1D fft;
     private int a = 0;
     private float threshold = 8;
-    private long threshdelay = 300;
+    private long threshdelay = 500;
     private boolean drawDisplay = false;
     private ToggleButton graphB, bassB, floorB, mountB, snareB, resetB;
     private TextView bassT, floorT, mountT, snareT;
@@ -162,6 +162,10 @@ public class AccellerationActivity extends Activity {
         fft.complexForward(xarrfft);
         fft.complexForward(yarrfft);
         fft.complexForward(zarrfft);
+        if (System.currentTimeMillis() - lastplayed < threshdelay) {
+            return;
+        }
+        lastplayed = System.currentTimeMillis();
         if (!learned)
             addpoint(xarr, yarr, zarr, xarrfft, yarrfft, zarrfft);
         else
@@ -180,7 +184,6 @@ public class AccellerationActivity extends Activity {
             snareB.setChecked(false);
             for(Holder h : holderArray) {
                 h.train();
-                break;
             }
             learned = true;
             bassC = 0;
@@ -196,10 +199,6 @@ public class AccellerationActivity extends Activity {
     }
     long lastplayed = 0;
     private void classifyPoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
-        if (System.currentTimeMillis() - lastplayed < threshdelay) {
-            return;
-        }
-        lastplayed = System.currentTimeMillis();
         float[] datapoint = new float[fftsize * 9];
         float abssum = 0;
         for (int i = 0; i < fftsize * 2; i++) {
@@ -231,10 +230,6 @@ public class AccellerationActivity extends Activity {
     }
 
     private void addpoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
-        if (System.currentTimeMillis() - lastplayed < threshdelay) {
-            return;
-        }
-        lastplayed = System.currentTimeMillis();
         float[] datapoint = new float[fftsize * 9];
         float abssum = 0;
         for (int i = 0; i < fftsize * 2; i++) {

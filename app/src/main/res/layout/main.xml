@@ -104,13 +104,13 @@
         android:id="@+id/mntCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Floor: "
+        android:text="Mount: "
         />
     <TextView
         android:id="@+id/flrCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mount: "
+        android:text="Floor: "
         />
     <TextView
         android:id="@+id/snareCount"
