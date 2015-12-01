@@ -180,14 +180,26 @@ public class AccellerationActivity extends Activity {
             snareB.setChecked(false);
             for(Holder h : holderArray) {
                 h.train();
-                //break;
+                break;
             }
             learned = true;
+            bassC = 0;
+            mountC = 0;
+            floorC = 0;
+            snareC = 0;
+            bassW = 0;
+            mountW = 0;
+            floorW = 0;
+            snareW = 0;
         }
         ((ToggleButton) v).setChecked(false);
     }
-
+    long lastplayed = 0;
     private void classifyPoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
+        if (System.currentTimeMillis() - lastplayed < threshdelay) {
+            return;
+        }
+        lastplayed = System.currentTimeMillis();
         float[] datapoint = new float[fftsize * 9];
         float abssum = 0;
         for (int i = 0; i < fftsize * 2; i++) {
@@ -208,10 +220,15 @@ public class AccellerationActivity extends Activity {
             Holder holder = holderArray[holderCurrent];
             int cata = holder.classify(datapoint);
             sound(cata);
+            if(currentClass>=0)
+            {
+                if(currentClass==cata)
+                    incrementCorrect(currentClass);
+                else
+                    decrement(currentClass);
+            }
         }
     }
-
-    long lastplayed = 0;
 
     private void addpoint(float[] xarr, float[] yarr, float[] zarr, float[] xarrfft, float[] yarrfft, float[] zarrfft) {
         if (System.currentTimeMillis() - lastplayed < threshdelay) {
@@ -261,6 +278,50 @@ public class AccellerationActivity extends Activity {
             case 3:
                 snareC++;
                 snareT.setText("Snare: " + snareC);
+                break;
+        }
+    }
+    int bassW = 0;
+    int mountW = 0;
+    int floorW = 0;
+    int snareW = 0;
+    private void incrementCorrect(int thisclass) {
+        switch (thisclass) {
+            case 0:
+                bassC++;
+                bassT.setText("Bass: " + bassC + " " + bassW);
+                break;
+            case 1:
+                mountC++;
+                mountT.setText("Mount: " + mountC + " " + mountW);
+                break;
+            case 2:
+                floorC++;
+                floorT.setText("Floor: " + floorC + " " + floorW);
+                break;
+            case 3:
+                snareC++;
+                snareT.setText("Snare: " + snareC + " " + snareW);
+                break;
+        }
+    }
+    private void decrement(int thisclass) {
+        switch (thisclass) {
+            case 0:
+                bassW--;
+                bassT.setText("Bass: " + bassC + " " + bassW);
+                break;
+            case 1:
+                mountW--;
+                mountT.setText("Mount: " + mountC + " " + mountW);
+                break;
+            case 2:
+                floorW--;
+                floorT.setText("Floor: " + floorC + " " + floorW);
+                break;
+            case 3:
+                snareW--;
+                snareT.setText("Snare: " + snareC + " " + snareW);
                 break;
         }
     }
@@ -321,6 +382,10 @@ public class AccellerationActivity extends Activity {
         mountC = 0;
         floorC = 0;
         snareC = 0;
+        bassW = 0;
+        mountW = 0;
+        floorW = 0;
+        snareW = 0;
         bassT.setText("Bass: ");
         mountT.setText("Mount: ");
         floorT.setText("Floor: ");
