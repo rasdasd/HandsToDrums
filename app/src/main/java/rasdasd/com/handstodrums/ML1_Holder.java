@@ -9,9 +9,10 @@ public class ML1_Holder implements Holder {
     ArrayList<ArrayList<double[]>> data = new ArrayList<ArrayList<double[]>>();
     ArrayList<double[]> desiredouts = new ArrayList<double[]>();
     public int classes = 0;
-    MLP mlp;
+    MultiLayerPerceptron mlp;
     int outputsize;
     int iterations = 100;
+    int layerCount = 10;
     public ML1_Holder(int classes, int inputsize)
     {
         outputsize = Integer.SIZE-Integer.numberOfLeadingZeros(classes-1);
@@ -29,8 +30,16 @@ public class ML1_Holder implements Holder {
             }
             desiredouts.add(desire);
         }
-        int hidden = (inputsize+outputsize)*2/3;
-        mlp = new MLP(inputsize, hidden, outputsize);
+        int[] layers = new int[layerCount];
+        layers[0] = inputsize;
+        int descent = (inputsize-outputsize)/layerCount;
+        for(int i = 1; i < layerCount-1; i++)
+        {
+            layers[i] = layers[i-1]-descent;
+        }
+        layers[layerCount] = outputsize;
+        HyperbolicTransfer traFunc = new HyperbolicTransfer();
+        MultiLayerPerceptron mlp = new MultiLayerPerceptron(layers,0.5,traFunc);
     }
     public void addDataPoint(float[] datapoint, int cata)
     {
@@ -50,7 +59,7 @@ public class ML1_Holder implements Holder {
                 for(int v = 0; v < data.get(c).size(); v++)
                 {
                     double[] pattern = data.get(c).get(v);
-                    mlp.train(pattern,desiredouts.get(c));
+                    mlp.backPropagate(pattern,desiredouts.get(c));
                 }
             }
         }
@@ -63,7 +72,7 @@ public class ML1_Holder implements Holder {
         {
             input[i] = datapoint[i];
         }
-        double[] output = mlp.passNet(input);
+        double[] output = mlp.execute(input);
         int result = 0;
         for(int i=output.length - 1; i>=0; i--)
         if(output[i]>=0.5)
