@@ -133,6 +133,7 @@ public class AccellerationActivity extends Activity {
         holderArray[2] = ML2Holder;
         holderArray[3] = ML3Holder;
         Holder[] ml4HolderArr = new Holder[4];
+        //ml4 array, votes
         ml4HolderArr[0] = MLPHolder;
         ml4HolderArr[1] = ML1Holder;
         ml4HolderArr[2] = ML2Holder;
