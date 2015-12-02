@@ -39,7 +39,7 @@ public class ML1_Holder implements Holder {
         }
         layers[layerCount-1] = outputsize;
         HyperbolicTransfer traFunc = new HyperbolicTransfer();
-        MultiLayerPerceptron mlp = new MultiLayerPerceptron(layers,0.5,traFunc);
+        mlp = new MultiLayerPerceptron(layers,0.5,traFunc);
     }
     public void addDataPoint(float[] datapoint, int cata)
     {
