@@ -37,7 +37,7 @@ public class ML1_Holder implements Holder {
         {
             layers[i] = layers[i-1]-descent;
         }
-        layers[layerCount] = outputsize;
+        layers[layerCount-1] = outputsize;
         HyperbolicTransfer traFunc = new HyperbolicTransfer();
         MultiLayerPerceptron mlp = new MultiLayerPerceptron(layers,0.5,traFunc);
     }
