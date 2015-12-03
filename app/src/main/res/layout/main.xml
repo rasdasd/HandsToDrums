@@ -86,10 +86,12 @@
             android:checked="false"
             android:onClick="reset"/>
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/colorView" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MLP"
+            android:id="@+id/buttonML"
+            android:onClick="MLButtonClick"/>
     </LinearLayout>
 
     <TextView
@@ -102,13 +104,13 @@
         android:id="@+id/mntCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Floor: "
+        android:text="Mount: "
         />
     <TextView
         android:id="@+id/flrCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mount: "
+        android:text="Floor: "
         />
     <TextView
         android:id="@+id/snareCount"
