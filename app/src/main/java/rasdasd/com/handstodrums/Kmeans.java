@@ -64,10 +64,7 @@ public class Kmeans {
         }
         return outs;
     }
-
-    public int[] classify(ArrayList<Integer> outs){
-        
-    }
+    
 
     public double calculateDist(double[] pattern, double[] center){
         double dist=0;
