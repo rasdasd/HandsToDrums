@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -61,6 +62,8 @@ public class AccellerationActivity extends Activity {
     private int holderCurrent;
     private int holderCount = 5;
     private Holder[] holderArray = new Holder[holderCount];
+    private TextView[][] textViews;
+    private int[][] correct,wrong;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,6 +143,46 @@ public class AccellerationActivity extends Activity {
         ml4HolderArr[3] = ML3Holder;
         ML4Holder = new ML4_Holder(ml4HolderArr,classes);
         holderArray[4] = ML4Holder;
+        LinearLayout bottomLayout = (LinearLayout)findViewById(R.id.bottomHorLayout);
+        textViews = new TextView[holderArray.length][classes];
+        correct=new int[holderArray.length][classes];
+        wrong=new int[holderArray.length][classes];
+        for(int i = 0; i < holderArray.length; i++)
+        {
+            LinearLayout vertLay = new LinearLayout(this);
+            vertLay.setOrientation(LinearLayout.VERTICAL);
+            vertLay.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            TextView title = new TextView(this);
+            TextView bassTV = new TextView(this);
+            TextView mountTV = new TextView(this);
+            TextView floorTV = new TextView(this);
+            TextView snareTV = new TextView(this);
+            title.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            bassTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            mountTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            floorTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            snareTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            title.setText("ML"+(i));
+            bassTV.setText("B: ");
+            mountTV.setText("M: ");
+            floorTV.setText("F: ");
+            snareTV.setText("S: ");
+            vertLay.addView(title);
+            vertLay.addView(bassTV);
+            vertLay.addView(mountTV);
+            vertLay.addView(floorTV);
+            vertLay.addView(snareTV);
+            bottomLayout.addView(vertLay);
+            textViews[i][0] = bassTV;
+            textViews[i][1] = mountTV;
+            textViews[i][2] = floorTV;
+            textViews[i][3] = snareTV;
+            for(int j = 0; j < classes; j++)
+            {
+                correct[i][j] = 0;
+                wrong[i][j] = 0;
+            }
+        }
         holderButton = (Button) findViewById(R.id.buttonML);
         holderCurrent = 0;
         sm = new SoundManager(this);
@@ -188,18 +231,24 @@ public class AccellerationActivity extends Activity {
             mountB.setChecked(false);
             floorB.setChecked(false);
             snareB.setChecked(false);
-            for(Holder h : holderArray) {
+            for (Holder h : holderArray) {
                 h.train();
+                System.out.println(h.getClass().toString()+" finished");
             }
+            System.out.println("DONE TRAINING");
+            LinearLayout layLearn = (LinearLayout)findViewById(R.id.layLearn);
+            layLearn.setVisibility(LinearLayout.GONE);
             learned = true;
             bassC = 0;
             mountC = 0;
             floorC = 0;
             snareC = 0;
-            bassW = 0;
-            mountW = 0;
-            floorW = 0;
-            snareW = 0;
+            for(int i = 0; i < holderArray.length; i++) {
+                for (int j = 0; j < classes; j++) {
+                    correct[i][j] = 0;
+                    wrong[i][j] = 0;
+                }
+            }
         }
         ((ToggleButton) v).setChecked(false);
     }
@@ -223,14 +272,18 @@ public class AccellerationActivity extends Activity {
         }
         if (abssum > threshold) {
             Holder holder = holderArray[holderCurrent];
-            int cata = holder.classify(datapoint);
-            sound(cata);
-            if(currentClass>=0)
-            {
-                if(currentClass==cata)
-                    incrementCorrect(currentClass);
-                else
-                    decrement(currentClass);
+            for(int i = 0; i < holderArray.length; i++) {
+                Holder h = holderArray[i];
+                int cata = h.classify(datapoint);
+                if(holderCurrent==i)
+                    sound(cata);
+                if(currentClass>=0)
+                {
+                    if(currentClass==cata)
+                        incrementCorrect(i,currentClass);
+                    else
+                        decrement(i,currentClass);
+                }
             }
         }
     }
@@ -266,63 +319,54 @@ public class AccellerationActivity extends Activity {
         switch (thisclass) {
             case 0:
                 bassC++;
-                bassT.setText("Bass: " + bassC);
+                bassT.setText("B: " + bassC);
                 break;
             case 1:
                 mountC++;
-                mountT.setText("Mount: " + mountC);
+                mountT.setText("M: " + mountC);
                 break;
             case 2:
                 floorC++;
-                floorT.setText("Floor: " + floorC);
+                floorT.setText("F: " + floorC);
                 break;
             case 3:
                 snareC++;
-                snareT.setText("Snare: " + snareC);
+                snareT.setText("S: " + snareC);
                 break;
         }
     }
-    int bassW = 0;
-    int mountW = 0;
-    int floorW = 0;
-    int snareW = 0;
-    private void incrementCorrect(int thisclass) {
+
+    private void incrementCorrect(int alg, int thisclass) {
+        correct[alg][thisclass]++;
         switch (thisclass) {
             case 0:
-                bassC++;
-                bassT.setText("Bass: " + bassC + " " + bassW);
+                textViews[alg][thisclass].setText("B: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 1:
-                mountC++;
-                mountT.setText("Mount: " + mountC + " " + mountW);
+                textViews[alg][thisclass].setText("M: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 2:
-                floorC++;
-                floorT.setText("Floor: " + floorC + " " + floorW);
+                textViews[alg][thisclass].setText("F: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 3:
-                snareC++;
-                snareT.setText("Snare: " + snareC + " " + snareW);
+                textViews[alg][thisclass].setText("S: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
         }
     }
-    private void decrement(int thisclass) {
+    private void decrement(int alg, int thisclass) {
+        wrong[alg][thisclass]--;
         switch (thisclass) {
             case 0:
-                bassW--;
-                bassT.setText("Bass: " + bassC + " " + bassW);
+                textViews[alg][thisclass].setText("Bass: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 1:
-                mountW--;
-                mountT.setText("Mount: " + mountC + " " + mountW);
+                textViews[alg][thisclass].setText("Mount: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 2:
-                floorW--;
-                floorT.setText("Floor: " + floorC + " " + floorW);
+                textViews[alg][thisclass].setText("Floor: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
             case 3:
-                snareW--;
-                snareT.setText("Snare: " + snareC + " " + snareW);
+                textViews[alg][thisclass].setText("Snare: " + correct[alg][thisclass] + " " + wrong[alg][thisclass]);
                 break;
         }
     }
@@ -393,10 +437,17 @@ public class AccellerationActivity extends Activity {
         mountC = 0;
         floorC = 0;
         snareC = 0;
-        bassW = 0;
-        mountW = 0;
-        floorW = 0;
-        snareW = 0;
+        LinearLayout layLearn = (LinearLayout)findViewById(R.id.layLearn);
+        layLearn.setVisibility(LinearLayout.VISIBLE);
+        for(int i = 0; i<holderArray.length; i++)
+        {
+            for(int j = 0; j<classes; j++)
+            {
+                textViews[i][j].setText("");
+                correct[i][j] = 0;
+                wrong[i][j] = 0;
+            }
+        }
         bassT.setText("Bass: ");
         mountT.setText("Mount: ");
         floorT.setText("Floor: ");

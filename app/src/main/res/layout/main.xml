@@ -94,28 +94,40 @@
             android:onClick="MLButtonClick"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/bassCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bass: "
-        />
-    <TextView
-        android:id="@+id/mntCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mount: "
-        />
-    <TextView
-        android:id="@+id/flrCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Floor: "
-        />
-    <TextView
-        android:id="@+id/snareCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Snare: "
-        />
+    <LinearLayout
+        android:id="@+id/bottomHorLayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/layLearn"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/bassCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bass: "
+                />
+            <TextView
+                android:id="@+id/mntCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mount: "
+                />
+            <TextView
+                android:id="@+id/flrCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Floor: "
+                />
+            <TextView
+                android:id="@+id/snareCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Snare: "
+                />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
