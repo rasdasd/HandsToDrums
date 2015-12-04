@@ -36,6 +36,7 @@ public class ML4_Holder implements Holder {
                 winner = i;
             }
         }
+        //if ties lets pick a random one
         int counter = 0;
         ArrayList<Integer> winners = new ArrayList<Integer>();
         for(int i = 0; i < votes.length; i++) {
