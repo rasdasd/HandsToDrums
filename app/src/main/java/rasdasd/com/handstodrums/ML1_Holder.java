@@ -1,6 +1,7 @@
 package rasdasd.com.handstodrums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by David on 10/21/2015.
@@ -13,9 +14,11 @@ public class ML1_Holder implements Holder {
     int outputsize;
     int iterations = 50;
     int layerCount = 5;
+    double[][] predictionBias;
 
     public ML1_Holder(int classes, int inputsize) {
         outputsize = Integer.SIZE - Integer.numberOfLeadingZeros(classes - 1);
+        System.out.println(outputsize);
         this.classes = classes;
         for (int i = 0; i < classes; i++) {
             data.add(new ArrayList<double[]>());
@@ -36,6 +39,13 @@ public class ML1_Holder implements Holder {
             layers[i] = layers[i - 1] - descent;
         }
         layers[layerCount - 1] = outputsize;
+        predictionBias = new double[outputsize][3];
+        for(int i = 0; i < outputsize; i++)
+        {
+            predictionBias[i][0] = Double.MIN_VALUE;
+            predictionBias[i][1] = Double.MAX_VALUE;
+        }
+
         mlp = new DeepMLP(layers);
     }
 
@@ -46,7 +56,6 @@ public class ML1_Holder implements Holder {
         }
         data.get(cata).add(output);
     }
-
     public void train() {
         mlp.setEpochs(iterations);
         for (int c = 0; c < classes; c++) {
@@ -54,6 +63,23 @@ public class ML1_Holder implements Holder {
                 double[] pattern = data.get(c).get(v);
                 mlp.StochasticLearning(pattern, desiredouts.get(c));
             }
+        }
+        for (int c = 0; c < classes; c++) {
+            for (int v = 0; v < data.get(c).size(); v++) {
+                double[] pattern = data.get(c).get(v);
+                double[] output = mlp.Predict(pattern);
+                for(int i = 0 ; i < output.length; i++) {
+                    double val = output[i];
+                    if(val > predictionBias[i][0])
+                        predictionBias[i][0] = val;
+                    if(val < predictionBias[i][1])
+                        predictionBias[i][1] = val;
+                }
+            }
+        }
+        for(int i = 0; i < outputsize; i++)
+        {
+            predictionBias[i][2] = (predictionBias[i][0]+predictionBias[i][1])/2.0;
         }
     }
 
@@ -64,9 +90,10 @@ public class ML1_Holder implements Holder {
             input[i] = datapoint[i];
         }
         double[] output = mlp.Predict(input);
+        System.out.println(Arrays.toString(output));
         int result = 0;
         for (int i = output.length - 1; i >= 0; i--)
-            if (output[i] >= 0.5)
+            if (output[i] >= predictionBias[i][2])
                 result += Math.pow(2, (output.length - i - 1));
         cata = result;
         return cata;

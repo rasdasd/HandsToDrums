@@ -11,7 +11,7 @@ public class ML2_Holder implements Holder {
     public int classes = 0;
     MLP mlp;
     int outputsize;
-    int iterations = 100;
+    int iterations = 10;
 
     public ML2_Holder(int classes, int inputsize) {
         outputsize = Integer.SIZE - Integer.numberOfLeadingZeros(classes - 1);

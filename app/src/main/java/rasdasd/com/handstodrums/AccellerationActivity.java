@@ -41,7 +41,7 @@ public class AccellerationActivity extends Activity {
     private BarChart fftchart;
     private FloatFFT_1D fft;
     private int a = 0;
-    private float threshold = 15;
+    private float threshold = 30;
     private long threshdelay = 300;
     private boolean drawDisplay = false;
     private ToggleButton graphB, bassB, floorB, mountB, snareB, resetB;

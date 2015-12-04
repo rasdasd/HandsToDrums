@@ -1,6 +1,7 @@
 package rasdasd.com.handstodrums;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by David on 10/21/2015.
@@ -11,10 +12,11 @@ public class MLP_Holder implements Holder{
     public int classes = 0;
     MLP mlp;
     int outputsize;
-    int iterations = 100;
+    int iterations = 1000;
     public MLP_Holder(int classes, int inputsize)
     {
         outputsize = Integer.SIZE-Integer.numberOfLeadingZeros(classes-1);
+        System.out.println(outputsize);
         this.classes = classes;
         for(int i = 0; i < classes; i++)
         {
@@ -64,6 +66,7 @@ public class MLP_Holder implements Holder{
             input[i] = datapoint[i];
         }
         double[] output = mlp.passNet(input);
+        System.out.println(Arrays.toString(output));
         int result = 0;
         for(int i=output.length - 1; i>=0; i--)
         if(output[i]>=0.5)

@@ -13,8 +13,8 @@ public class DeepMLP {
     // | Constants |
     // +-----------+
 
-    private double Epochs       = 100;     // Default number of iterations
-    private double LearningRate = 0.5;     // Default learning rate (good only for stochastic learning process)
+    private double Epochs       = 1000;     // Default number of iterations
+    private double LearningRate = 1e-3;     // Default learning rate (good only for stochastic learning process)
     private double Momentum     = 0.9;      // Default momentum for stochastic learning process
     private double Lambda       = 0.0;      // Default regularization parameter for batch learning process, no regularization
     private double Epsilon      = 1e-3;     // Default epsilon for stopping stochastic learning process
