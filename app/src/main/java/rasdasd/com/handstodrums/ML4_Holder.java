@@ -1,6 +1,7 @@
 package rasdasd.com.handstodrums;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by David on 10/21/2015.
@@ -21,7 +22,7 @@ public class ML4_Holder implements Holder {
     public void train() {
 
     }
-
+    Random rand = new Random();
     public int classify(float[] datapoint) {
         int[] votes = new int[classes];
         for (Holder h : holders) {
@@ -34,6 +35,18 @@ public class ML4_Holder implements Holder {
                 max = votes[i];
                 winner = i;
             }
+        }
+        int counter = 0;
+        ArrayList<Integer> winners = new ArrayList<Integer>();
+        for(int i = 0; i < votes.length; i++) {
+            if (votes[i] == max) {
+                counter++;
+                winners.add(i);
+            }
+        }
+        if(counter>1)
+        {
+            winner = winners.get(rand.nextInt(winners.size()));
         }
         return winner;
     }
