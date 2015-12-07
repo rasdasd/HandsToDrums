@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -44,7 +45,7 @@ public class AccellerationActivity extends Activity {
     private float threshold = 30;
     private long threshdelay = 300;
     private boolean drawDisplay = false;
-    private ToggleButton graphB, bassB, floorB, mountB, snareB, resetB;
+    private ToggleButton bassB, floorB, mountB, snareB, resetB;
     private TextView bassT, floorT, mountT, snareT;
     private int bassC, floorC, mountC, snareC;
     private boolean learned = false;
@@ -64,6 +65,7 @@ public class AccellerationActivity extends Activity {
     private Holder[] holderArray = new Holder[holderCount];
     private TextView[][] textViews;
     private int[][] correct,wrong;
+    private NumberPicker np;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,6 @@ public class AccellerationActivity extends Activity {
         zarrfft = new float[fftsize * 2];
         result = (TextView) findViewById(R.id.result);
         result.setText("No result yet");
-        graphB = (ToggleButton) findViewById(R.id.buttonGraph);
         bassB = (ToggleButton) findViewById(R.id.buttonBass);
         mountB = (ToggleButton) findViewById(R.id.buttonMounted);
         floorB = (ToggleButton) findViewById(R.id.buttonFloor);
@@ -187,6 +188,18 @@ public class AccellerationActivity extends Activity {
         holderCurrent = 0;
         sm = new SoundManager(this);
         fft = new FloatFFT_1D(fftsize);
+        np = (NumberPicker) findViewById(R.id.numberPicker);
+        np.setValue(10);
+        np.setMinValue(1);
+        np.setMaxValue(100);
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                threshold = newVal*10;
+                System.out.println(threshold);
+            }
+        });
     }
 
     public void MLButtonClick(View v)
@@ -401,8 +414,7 @@ public class AccellerationActivity extends Activity {
             z = event.values[2] - gravity[2];
             result.setText(String.format("x is: %f / y is: %f / z is: %f", x, y, z));
             manipData();
-            if (graphB.isChecked())
-                refreshDisplay();
+            refreshDisplay();
         }
     };
 
@@ -437,6 +449,7 @@ public class AccellerationActivity extends Activity {
         mountC = 0;
         floorC = 0;
         snareC = 0;
+        np.setValue(10);
         LinearLayout layLearn = (LinearLayout)findViewById(R.id.layLearn);
         layLearn.setVisibility(LinearLayout.VISIBLE);
         for(int i = 0; i<holderArray.length; i++)
