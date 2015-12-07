@@ -191,6 +191,8 @@ public class AccellerationActivity extends Activity {
             for(Holder h : holderArray) {
                 h.train();
             }
+//            Holder h = holderArray[holderCurrent];
+//            h.train();
             learned = true;
             bassC = 0;
             mountC = 0;

@@ -3,10 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
-
     defaultConfig {
         applicationId "rasdasd.com.handstodrums"
-        minSdkVersion 22
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -19,6 +18,8 @@ android {
         debug {
             debuggable true
         }
+    }
+    productFlavors {
     }
 }
 repositories {
