@@ -12,7 +12,7 @@ public class MLP_Holder implements Holder{
     public int classes = 0;
     MLP mlp;
     int outputsize;
-    int iterations = 1000;
+    int iterations = 500;
     public MLP_Holder(int classes, int inputsize)
     {
         outputsize = Integer.SIZE-Integer.numberOfLeadingZeros(classes-1);

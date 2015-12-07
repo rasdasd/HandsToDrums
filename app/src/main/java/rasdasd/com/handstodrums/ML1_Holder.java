@@ -12,7 +12,7 @@ public class ML1_Holder implements Holder {
     public int classes = 0;
     DeepMLP mlp;
     int outputsize;
-    int iterations = 50;
+    int iterations = 100;
     int layerCount = 5;
     double[][] predictionBias;
 

@@ -8,7 +8,7 @@ public class MLP {
     //     from hidden layer and "i" from input layer
     weigthL2;  // Weights values of connection between neuron "j"
     //     from output layer and "i" from hidden layer
-    private double learningRate = 0.5;
+    private double learningRate = 1e-3;
 
     /**
      * Creates a new instance of MLP.
