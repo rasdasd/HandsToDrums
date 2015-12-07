@@ -189,7 +189,6 @@ public class AccellerationActivity extends Activity {
         sm = new SoundManager(this);
         fft = new FloatFFT_1D(fftsize);
         np = (NumberPicker) findViewById(R.id.numberPicker);
-        np.setValue(10);
         np.setMinValue(1);
         np.setMaxValue(100);
         np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
@@ -449,7 +448,6 @@ public class AccellerationActivity extends Activity {
         mountC = 0;
         floorC = 0;
         snareC = 0;
-        np.setValue(10);
         LinearLayout layLearn = (LinearLayout)findViewById(R.id.layLearn);
         layLearn.setVisibility(LinearLayout.VISIBLE);
         for(int i = 0; i<holderArray.length; i++)
